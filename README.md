@@ -41,7 +41,7 @@ Since 8-bit sRGB is such a common model, and the sRGB gamma function is quite ex
 This uses a lookup table for linearization, but is still quite slow for companding, although this could be improved. The compander includes scaling for 8-bit RGB, so should not need a scaler. Use it like this:
 ```go
 // no scaler, and override compander with SRGBFastCompander
-rgb2xyz := NewRGBTransformer(&SpaceSRGB, &AdaptationBradford, targetIlluminant, nil, 1.0, &SRGBFastCompander)
+rgb2xyz := NewRGBTransformer(&SpaceSRGB, &AdaptationBradford, targetIlluminant, nil, 1.0, SRGBFastCompander.Init(&SpaceSRGB))
 ```
 
 ## TODO
