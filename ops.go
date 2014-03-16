@@ -5,6 +5,15 @@ import (
 	"sync"
 )
 
+func clip(v float64) float64 {
+	if v < 0.0 {
+		v = 0.0
+	} else if v > 1.0 {
+		v = 1.0
+	}
+	return v
+}
+
 type scaler8bClamping struct{}
 
 // Scaler8bClamping is a simple mapping of values [0,255] to [0,1], clamping all out of bounds values
@@ -20,25 +29,9 @@ func (*scaler8bClamping) Scale(p Point) Point {
 }
 
 func (*scaler8bClamping) ScaleInv(p Point) Point {
-	if p[0] < 0.0 {
-		p[0] = 0.0
-	} else if p[0] > 1.0 {
-		p[0] = 1.0
-	}
-	if p[1] < 0.0 {
-		p[1] = 0.0
-	} else if p[1] > 1.0 {
-		p[1] = 1.0
-	}
-	if p[2] < 0.0 {
-		p[2] = 0.0
-	} else if p[2] > 1.0 {
-		p[2] = 1.0
-	}
-
-	p[0] = math.Floor(0.5 + p[0]*255)
-	p[1] = math.Floor(0.5 + p[1]*255)
-	p[2] = math.Floor(0.5 + p[2]*255)
+	p[0] = math.Floor(0.5 + clip(p[0])*255)
+	p[1] = math.Floor(0.5 + clip(p[1])*255)
+	p[2] = math.Floor(0.5 + clip(p[2])*255)
 	return p
 }
 
@@ -57,25 +50,9 @@ func (*scaler16bClamping) Scale(p Point) Point {
 }
 
 func (*scaler16bClamping) ScaleInv(p Point) Point {
-	if p[0] < 0.0 {
-		p[0] = 0.0
-	} else if p[0] > 1.0 {
-		p[0] = 1.0
-	}
-	if p[1] < 0.0 {
-		p[1] = 0.0
-	} else if p[1] > 1.0 {
-		p[1] = 1.0
-	}
-	if p[2] < 0.0 {
-		p[2] = 0.0
-	} else if p[2] > 1.0 {
-		p[2] = 1.0
-	}
-
-	p[0] = math.Floor(0.5 + p[0]*65535)
-	p[1] = math.Floor(0.5 + p[1]*65535)
-	p[2] = math.Floor(0.5 + p[2]*65535)
+	p[0] = math.Floor(0.5 + clip(p[0])*65535)
+	p[1] = math.Floor(0.5 + clip(p[1])*65535)
+	p[2] = math.Floor(0.5 + clip(p[2])*65535)
 	return p
 }
 
