@@ -119,8 +119,8 @@ type Scaler interface {
 	ScaleInv(Point) Point
 }
 
-// XYZTransform calculates a transform matrix for the primaries to XYZ
-func (p XyYPrimary) XYZTransform(illuminantRef XYZ) Matrix {
+// RGBTransform calculates a transform matrix given the primaries for RGB⇒XYZ
+func (p XyYPrimary) RGBTransform(illuminantRef XYZ) Matrix {
 	m := Matrix{
 		p.Xr/p.Yr, p.Xg/p.Yg, p.Xb/p.Yb,
 		1.0, 1.0, 1.0,

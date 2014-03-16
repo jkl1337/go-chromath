@@ -33,7 +33,7 @@ func NewRGBTransformer(ws *RGBSpace, adaptation *Adaptation, targetIlluminant *I
 
 	t.inScaler = scaler
 
-	t.spaceTm = ws.XyYPrimary.XYZTransform(ws.IlluminantRef.XYZ)
+	t.spaceTm = ws.XyYPrimary.RGBTransform(ws.IlluminantRef.XYZ)
 
 	x := t.spaceTm
 
@@ -97,4 +97,20 @@ func (t *RGBTransformer) Invert(xyz XYZ) RGB {
 	}
 
 	return RGB(p)
+}
+
+// Return the computed adaptation matrix for the transformer
+func (t *RGBTransformer) AdaptTM() Matrix {
+	return t.adaptTm
+}
+
+// Return the computed linear RGB⇒XYZ matrix for the transformer
+func (t *RGBTransformer) SpaceTM() Matrix {
+	return t.spaceTm
+}
+
+// Return the computed complete transformation matrix for the transformer
+// This matrix includes adaptation, space transform, and output scaling
+func (t *RGBTransformer) TM() Matrix {
+	return t.transform
 }
