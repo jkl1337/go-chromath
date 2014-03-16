@@ -5,15 +5,11 @@ import (
 )
 
 type LuvTransformer struct {
-	outScale float64
 	refWp XYZ
 	u0, v0 float64
 }
 
-func NewLuvTransformer(refIlluminant *IlluminantRef, outScale float64) *LuvTransformer {
-	if outScale == 0 {
-		outScale = 1
-	}
+func NewLuvTransformer(refIlluminant *IlluminantRef) *LuvTransformer {
 	if refIlluminant == nil {
 		refIlluminant = &IlluminantRefD50
 	}
@@ -21,7 +17,7 @@ func NewLuvTransformer(refIlluminant *IlluminantRef, outScale float64) *LuvTrans
 	dn := wp.X() + 15.0 * wp.Y() + 3.0 * wp.Z()
 	u0 := 4.0 * wp.X() / dn
 	v0 := 9.0 * wp.Y() / dn
-	return &LuvTransformer{outScale, wp, u0, v0}
+	return &LuvTransformer{wp, u0, v0}
 }
 
 func (t *LuvTransformer) Convert(p Luv) XYZ {

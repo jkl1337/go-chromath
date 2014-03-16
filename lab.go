@@ -5,18 +5,14 @@ import (
 )
 
 type LabTransformer struct {
-	outScale float64
 	refWp XYZ
 }
 
-func NewLabTransformer(refIlluminant *IlluminantRef, outScale float64) *LabTransformer {
-	if outScale == 0 {
-		outScale = 1
-	}
+func NewLabTransformer(refIlluminant *IlluminantRef) *LabTransformer {
 	if refIlluminant == nil {
 		refIlluminant = &IlluminantRefD50
 	}
-	return &LabTransformer{outScale, refIlluminant.XYZ}
+	return &LabTransformer{refIlluminant.XYZ}
 }
 
 func (t *LabTransformer) Convert(p Lab) XYZ {

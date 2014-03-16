@@ -21,19 +21,19 @@ func testPointAlmostEqual(t *testing.T, a Point, b Point, places int) {
 }
 
 func TestXYZToLabConversion(t *testing.T) {
-	lt := NewLabTransformer(nil, 1.0)
+	lt := NewLabTransformer(nil)
 	lab := lt.Invert(XYZ{0.1, 0.2, 0.3})
 	testPointAlmostEqual(t, Point(lab), Point{51.837, -57.486, -25.780}, 3)
 }
 
 func TestXYZToLuvConversion(t *testing.T) {
-	lt := NewLuvTransformer(nil, 1.0)
+	lt := NewLuvTransformer(nil)
 	lab := lt.Invert(XYZ{0.1, 0.2, 0.3})
 	testPointAlmostEqual(t, Point(lab), Point{51.837, -73.561, -25.657}, 3)
 }
 
 func TestLuvToXYZConversion(t *testing.T) {
-	lt := NewLuvTransformer(nil, 1.0)
+	lt := NewLuvTransformer(nil)
 	xyz := lt.Convert(Luv{1.807, -2.564, -0.894})
 	testPointAlmostEqual(t, Point(xyz), Point{0.001, 0.002, 0.003}, 3)
 }
@@ -44,7 +44,7 @@ func TestLabtoLCHuvConversion(t *testing.T) {
 }
 
 func TestLabtoXYZConversion(t *testing.T) {
-	lt := NewLabTransformer(nil, 1.0)
+	lt := NewLabTransformer(nil)
 	xyz := lt.Convert(Lab{1.807, -3.749, -2.547})
 	testPointAlmostEqual(t, Point(xyz), Point{0.001, 0.002, 0.003}, 3)
 }
@@ -86,7 +86,7 @@ func TestAdobeRGBToXYZConversion(t *testing.T) {
 }
 
 func TestLChToRGBConversion(t *testing.T) {
-	lab2xyz := NewLabTransformer(nil, 0)
+	lab2xyz := NewLabTransformer(nil)
 	rgb2xyz := NewRGBTransformer(&SpaceSRGB, nil, nil, nil, 0.0, nil)
 	rgb := rgb2xyz.Invert(lab2xyz.Convert(LCh{0.0, 0.0, 0.0}.Lab()))
 	testPointEqual(t, Point(rgb), Point{0.0, 0.0, 0.0})
