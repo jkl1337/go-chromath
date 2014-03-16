@@ -34,7 +34,7 @@ c2lab := lab2xyz.Invert(c2xyz)
 
 Perform the ΔE computation, which is provided by a stateless function.
 ```go
-Δe2000 := DeltaECIE2000(c1lab, c2lab, &KLChDefault)
+Δe2000 := deltae.CIE2000(c1lab, c2lab, &KLChDefault)
 ```
 
 Since 8-bit sRGB is such a common model, and the sRGB gamma function is quite expensive in floating point, a faster sRGB scaler compander implementation is provided: `SRGBFastCompander`.
@@ -48,3 +48,4 @@ rgb2xyz := NewRGBTransformer(&SpaceSRGB, &AdaptationBradford, targetIlluminant, 
 * While there are some basic tests, coverage in transformations needs improvements. The CIEDE2000 is better tested.
 * An implementation of CIECAM02 is also forthcoming.
 * More documentation is required. Unfortunately all this presupposes a previous familiarlity with the color space and matching fundamentals.
+* Continue to refine the packaging

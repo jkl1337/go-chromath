@@ -1,12 +1,17 @@
-package chromath
+package deltae
 
 import (
+	. "github.com/jkl1337/go-chromath"
 	"math"
 )
 
 const (
 	pi = math.Pi
 )
+
+func sqr(v float64) float64 {
+	return v * v
+}
 
 type KLCh struct {
 	KL, KC, Kh float64
@@ -19,7 +24,7 @@ var KLChDefault = KLCh{1, 1, 1}
 // Note that this implementation will exhibit slightly different behavior around the discontinuities
 // of the function (these are grey colors) compared to Java and most C runtimes. The golang atan
 // function has different accuracy characteristics compared to most Unix platforms and Java Strict math
-func DeltaECIE2000(std Lab, sample Lab, klch *KLCh) float64 {
+func CIE2000(std Lab, sample Lab, klch *KLCh) float64 {
 	lBarPrime := (std.L() + sample.L()) * 0.5
 	c1 := math.Sqrt(std.A()*std.A() + std.B()*std.B())
 	c2 := math.Sqrt(sample.A()*sample.A() + sample.B()*sample.B())
@@ -93,7 +98,7 @@ func DeltaECIE2000(std Lab, sample Lab, klch *KLCh) float64 {
 }
 
 // DeltaECIE76 computes the CIE76 color difference. This is just Euclidean distance in Lab space, and therefore quite fast
-func DeltaECIE76(std Lab, sample Lab) float64 {
+func CIE76(std Lab, sample Lab) float64 {
 	return math.Sqrt(sqr(std.L() - sample.L()) + sqr(std.A() - sample.A()) + sqr(std.B() - sample.B()))
 }
 
@@ -107,7 +112,7 @@ var KLCH94Textiles = KLCh94{2, 1, 1, 0.048, 0.014}
 
 // DeltaECIE94 computes the CIE94 color difference of two L*a*b* colors.
 // This is a distance calculation with the addition of weighting factors specified by klch.
-func DeltaECIE94(std Lab, sample Lab, klch *KLCh94) float64 {
+func CIE94(std Lab, sample Lab, klch *KLCh94) float64 {
 	dLsq := sqr(std.L() - sample.L())
 	c1 := math.Sqrt(sqr(std.A()) + sqr(std.B()))
 	c2 := math.Sqrt(sqr(sample.A()) + sqr(sample.B()))
