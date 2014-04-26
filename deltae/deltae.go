@@ -1,3 +1,5 @@
+// Package deltae provides implementations of common CIE standard color difference (ΔE)
+// calculations.
 package deltae
 
 import (
@@ -13,13 +15,15 @@ func sqr(v float64) float64 {
 	return v * v
 }
 
+// KLCh represents the weighting parameters that are used for the CIEDE2000 color difference calculation.
 type KLCh struct {
 	KL, KC, Kh float64
 }
 
+// KLCHDefault is the most commonly used set of weighting parameters for CIEDE2000
 var KLChDefault = KLCh{1, 1, 1}
 
-// DeltaECIE2000 computes the CIEDE2000 delta-E for two L*a*b* space color coordinates
+// CIE2000 computes the CIEDE2000 delta-E for two L*a*b* space color coordinates
 // klch is for configuring the weighting factors, but this almost always should be KLCHDefault
 // Note that this implementation will exhibit slightly different behavior around the discontinuities
 // of the function (these are grey colors) compared to Java and most C runtimes. The golang atan
@@ -44,33 +48,29 @@ func CIE2000(std Lab, sample Lab, klch *KLCh) float64 {
 
 	h1Prime := math.Atan2(std.B(), a1Prime)
 	if h1Prime < 0 {
-		h1Prime += 2*pi
+		h1Prime += 2 * pi
 	}
 	h2Prime := math.Atan2(sample.B(), a2Prime)
 	if h2Prime < 0 {
-		h2Prime += 2*pi
+		h2Prime += 2 * pi
 	}
 
 	hBarPrime := (h1Prime + h2Prime) * 0.5
 	dhPrime := h2Prime - h1Prime
 	if math.Abs(dhPrime) > pi {
 		hBarPrime += pi
-		// hBarPrime -= pi
-		// if hBarPrime < 0 {
-		// 	hBarPrime += 2*pi
-		// }
 		if h2Prime <= h1Prime {
-			dhPrime += 2*pi
+			dhPrime += 2 * pi
 		} else {
-			dhPrime -= 2*pi
+			dhPrime -= 2 * pi
 		}
 	}
 
 	t := 1.0 -
-		0.17 * math.Cos(hBarPrime-pi/6) +
-		0.24 * math.Cos(2.0*hBarPrime) +
-		0.32 * math.Cos(3.0*hBarPrime+pi/30) -
-		0.20 * math.Cos(4.0*hBarPrime-63.0*pi/180)
+		0.17*math.Cos(hBarPrime-pi/6) +
+		0.24*math.Cos(2.0*hBarPrime) +
+		0.32*math.Cos(3.0*hBarPrime+pi/30) -
+		0.20*math.Cos(4.0*hBarPrime-63.0*pi/180)
 
 	dLPrime := sample.L() - std.L()
 	dCPrime := c2Prime - c1Prime
@@ -82,8 +82,8 @@ func CIE2000(std Lab, sample Lab, klch *KLCh) float64 {
 	sC := 1.0 + 0.045*cBarPrime
 	sH := 1.0 + 0.015*cBarPrime*t
 
-	hBarPrimeM := (180/pi*hBarPrime-275.0)/25.0
-	dTheta := pi/6 * math.Exp(-hBarPrimeM*hBarPrimeM)
+	hBarPrimeM := (180/pi*hBarPrime - 275.0) / 25.0
+	dTheta := pi / 6 * math.Exp(-hBarPrimeM*hBarPrimeM)
 	cBarPrime7 := cBarPrime * cBarPrime * cBarPrime
 	cBarPrime7 *= cBarPrime7 * cBarPrime
 	rC := math.Sqrt(cBarPrime7 / (cBarPrime7 + 6103515625.0))
@@ -91,23 +91,26 @@ func CIE2000(std Lab, sample Lab, klch *KLCh) float64 {
 
 	return math.Sqrt(
 		sqr(dLPrime/(klch.KL*sL)) +
-			sqr(dCPrime / (klch.KC * sC)) +
-			sqr(dHPrime / (klch.Kh * sH)) +
-			(dCPrime / (klch.KC * sC)) * (dHPrime / (klch.Kh * sH)) * rT)
+			sqr(dCPrime/(klch.KC*sC)) +
+			sqr(dHPrime/(klch.Kh*sH)) +
+			(dCPrime/(klch.KC*sC))*(dHPrime/(klch.Kh*sH))*rT)
 
 }
 
-// DeltaECIE76 computes the CIE76 color difference. This is just Euclidean distance in Lab space, and therefore quite fast
+// CIE76 computes the CIE76 color difference. This is just Euclidean distance in Lab space, and therefore quite fast, though it exhibits perceptual uniformity issues especially in the blue and desaturated regions.
 func CIE76(std Lab, sample Lab) float64 {
-	return math.Sqrt(sqr(std.L() - sample.L()) + sqr(std.A() - sample.A()) + sqr(std.B() - sample.B()))
+	return math.Sqrt(sqr(std.L()-sample.L()) + sqr(std.A()-sample.A()) + sqr(std.B()-sample.B()))
 }
 
-// KLCh94 is a struct for weighting factors for DeltaECIE94
+// KLCh94 is a struct for weighting factors for CIE94 ΔE calculation.
 type KLCh94 struct {
 	KL, KC, Kh, K1, K2 float64
 }
 
+// KLCH94GraphicArts are the weighting factors for CIE94 used for most uses except textiles.
 var KLCH94GraphicArts = KLCh94{1, 1, 1, 0.045, 0.015}
+
+// KLCH94Textiles are the weighting factors for CIE94 used for textiles.
 var KLCH94Textiles = KLCh94{2, 1, 1, 0.048, 0.014}
 
 // DeltaECIE94 computes the CIE94 color difference of two L*a*b* colors.
@@ -118,7 +121,7 @@ func CIE94(std Lab, sample Lab, klch *KLCh94) float64 {
 	c2 := math.Sqrt(sqr(sample.A()) + sqr(sample.B()))
 
 	dCsq := sqr(c1 - c2)
-	dHsq := sqr(std.A() - sample.A()) + sqr(std.B() - sample.B()) - dCsq
+	dHsq := sqr(std.A()-sample.A()) + sqr(std.B()-sample.B()) - dCsq
 
 	sC := 1.0 + klch.K1*c1
 	sH := 1.0 + klch.K2*c1

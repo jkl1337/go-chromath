@@ -116,7 +116,7 @@ func (c *gammaCompander) Linearize(p Point) Point {
 }
 
 type sRGBCompander struct {}
-// SRGBCompander provides the companding γ function as specified for sRGB
+// SRGBCompander provides the companding γ function as specified for sRGB.
 var SRGBCompander sRGBCompander
 
 func (*sRGBCompander) Init(ws *RGBSpace) Compander { return &SRGBCompander }
@@ -247,6 +247,8 @@ func (*sRGBFastCompander) Linearize(p Point) Point {
 }
 
 type lstarCompander struct {}
+// LstarCompander is a compander used for L* gamma response used in working spaces such
+// as ECI RGB and in alternative RGB calibrated workflows.
 var LstarCompander lstarCompander
 
 func (*lstarCompander) Init(ws *RGBSpace) Compander { return &LstarCompander }

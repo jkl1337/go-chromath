@@ -4,10 +4,12 @@ import (
 	"math"
 )
 
+// LabTransformer performs transform to CIELAB from XYZ and vice-versa
 type LabTransformer struct {
 	refWp XYZ
 }
 
+// NewLabTransformer creates a LAB ⇔ XYZ transformer
 func NewLabTransformer(refIlluminant *IlluminantRef) *LabTransformer {
 	if refIlluminant == nil {
 		refIlluminant = &IlluminantRefD50
@@ -15,6 +17,7 @@ func NewLabTransformer(refIlluminant *IlluminantRef) *LabTransformer {
 	return &LabTransformer{refIlluminant.XYZ}
 }
 
+// Convert converts a LAB point to XYZ
 func (t *LabTransformer) Convert(p Lab) XYZ {
 	fy := (p.L() + 16.0) / 116.0
 	fx := 0.002 * p.A() + fy
@@ -44,6 +47,7 @@ func (t *LabTransformer) Convert(p Lab) XYZ {
 	return XYZ{xr * t.refWp.X(), yr * t.refWp.Y(), zr * t.refWp.Z()}
 }
 
+// Invert converts an XYZ point to LAB
 func (t *LabTransformer) Invert(p XYZ) Lab {
 	xr, yr, zr := p.X()/t.refWp.X(), p.Y()/t.refWp.Y(), p.Z()/t.refWp.Z()
 
@@ -67,6 +71,7 @@ func (t *LabTransformer) Invert(p XYZ) Lab {
 	return Lab{116 * fy - 16.0, 500.0 * (fx - fy), 200.0 * (fy - fz)}
 }
 
+// LCh returns the LAB point as an LCh(ab) point (Lab in cylindrical coordinates)
 func (p Lab) LCh() LCh {
 	c := math.Sqrt(sqr(p.A()) + sqr(p.B()))
 	h := 180.0 * math.Atan2(p.B(), p.A()) / math.Pi
@@ -77,6 +82,7 @@ func (p Lab) LCh() LCh {
 	return LCh(p)
 }
 
+// Lab returns the LCh(ab) point as LAB
 func (p LCh) Lab() Lab {
 	a := p.C() * math.Cos(p.H() * math.Pi / 180.0)
 	b := p.C() * math.Sin(p.H() * math.Pi / 180.0)
@@ -84,9 +90,11 @@ func (p LCh) Lab() Lab {
 	return Lab(p)
 }
 
+// LCh2LabTransformer is a transformer from LAB to LCh(ab)
 type LCh2LabTransformer struct {}
 var lCh2LabTransformerInst LCh2LabTransformer
 
+// NewLCh2LabTransformer creates a CIELAB ⇔ CIELCh(ab) transformer
 func NewLCh2LabTransformer() *LCh2LabTransformer {
 	return &lCh2LabTransformerInst
 }
