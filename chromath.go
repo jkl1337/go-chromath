@@ -1,6 +1,6 @@
 // The chromath package provides math functions for common colorspace transformations including
 // customizable RGB working space to XYZ transformations and commonly used CIE colorspaces including CIELAB, CIELUV, and their cylindrical coordinate counterparts.
-// Addtionally it provides convenient and performant application of commonly used chromatic adaptation transforms.
+// Additionally it provides convenient and performant application of commonly used chromatic adaptation transforms.
 // Most transformations are invoked on methods of transformer objects. A transformer receiver
 // can therefore precompute certain aspects of the transform such as a combined chromatic adaptation and working space transform matrix.
 package chromath

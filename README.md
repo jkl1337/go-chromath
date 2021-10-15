@@ -1,10 +1,10 @@
 # go-chromath
 
-go-chromath is a library for color space math including transformations, chromatic adaptation and color difference (ΔE) calculation. It provides implentations of common RGB spaces to CIEXYZ, and CIEXYZ to useful CIE spaces such as L\*a\*b\*, LCH, Luv. Special care has been taken in the implementation of CIEDE2000, a calculation that is commonly defectively implemented.
+go-chromath is a library for color space math including transformations, chromatic adaptation and color difference (ΔE) calculation. It provides implementations of common RGB spaces to CIEXYZ, and CIEXYZ to useful CIE spaces such as L\*a\*b\*, LCH, Luv. Special care has been taken in the implementation of CIEDE2000, a calculation that is commonly defectively implemented.
 
 ## Use
 
-Let's convert two colors from sRGB to L\*a\*b with a reference white of D50 and perform a CIEDE2000 color difference calculation. This requires creating a coverter from RGB to XYZ, and from XYZ to Lab. One converter instance can be used on all points.
+Let's convert two colors from sRGB to L\*a\*b with a reference white of D50 and perform a CIEDE2000 color difference calculation. This requires creating a converter from RGB to XYZ, and from XYZ to Lab. One converter instance can be used on all points.
 ```go
 c1 := RGB{194, 0, 120} // xkcd magenta
 c2 := RGB{203, 65, 107} // xkcd hot pink
@@ -47,5 +47,5 @@ rgb2xyz := NewRGBTransformer(&SpaceSRGB, &AdaptationBradford, targetIlluminant, 
 ## TODO
 * While there are some basic tests, coverage in transformations needs improvements. The CIEDE2000 is better tested.
 * An implementation of CIECAM02 is also forthcoming.
-* More documentation is required. Unfortunately all this presupposes a previous familiarlity with the color space and matching fundamentals.
+* More documentation is required. Unfortunately all this presupposes a previous familiarity with the color space and matching fundamentals.
 * Continue to refine the packaging

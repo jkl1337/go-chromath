@@ -333,7 +333,7 @@ func (*lstarCompander) Linearize(p Point) Point {
 }
 
 type bT2020Compander struct {}
-// BT2020Compander provides a compander matching the transfer function speicied by the BT.2020 (HDTV) recommendation
+// BT2020Compander provides a compander matching the transfer function specified by the BT.2020 (HDTV) recommendation
 // It should be usable for both 12-bit and 10-bit simulations
 var BT2020Compander bT2020Compander
 
